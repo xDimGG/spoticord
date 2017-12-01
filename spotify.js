@@ -37,10 +37,9 @@ class Spotify extends EventEmitter {
 		try {
 			const { body } = await this._get('/remote/status.json', this._query);
 			if (!body.track || !body.track.track_resource) {
-				this.emit('stop');
-				if (this._stopped === false) this._stopped === true;
+				if (this._stopped === false) this.emit('stop');
 				return;
-			}
+			} else this._stopped = true;
 			const song = new Song(body);
 			if (this._playing === null) this._playing = body.playing;
 			if (this._playing !== body.playing) {
