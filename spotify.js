@@ -21,6 +21,7 @@ class Spotify extends EventEmitter {
 		this._open = 'https://open.spotify.com';
 		this._base = `http://localhost:${this._port}`;
 		this._playing = null;
+		this._stopped = null;
 		this._song = '';
 	}
 
@@ -33,18 +34,24 @@ class Spotify extends EventEmitter {
 	}
 
 	async check() {
-		const { body } = await this._get('/remote/status.json', this._query);
-		if (!body.track || !body.track.track_resource) return this.emit('stop');
-		const song = new Song(body);
-		if (this._playing === null) this._playing = body.playing;
-		if (this._playing !== body.playing) {
-			this._playing = body.playing;
-			this.emit(`${this._playing ? 'un' : ''}pause`, song);
-		} else {
-			if (this._song !== song.id) {
-				this._song = song.id;
-				this.emit('song', song);
+		try {
+			const { body } = await this._get('/remote/status.json', this._query);
+			console.log(body);
+			if (!body.track || !body.track.track_resource && !this._stopped) return this.emit('stop');
+			else this._stopped = true;
+			const song = new Song(body);
+			if (this._playing === null) this._playing = body.playing;
+			if (this._playing !== body.playing) {
+				this._playing = body.playing;
+				this.emit(`${this._playing ? 'un' : ''}pause`, song);
+			} else {
+				if (this._song !== song.id) {
+					this._song = song.id;
+					this.emit('song', song);
+				}
 			}
+		} catch (error) {
+			this.emit('error', error);
 		}
 	}
 
