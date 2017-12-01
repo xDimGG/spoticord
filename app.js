@@ -8,7 +8,7 @@ const Spotify = require('./spotify');
 const spotify = new Spotify();
 
 const activity = {
-	details: '🎵 None',
+	details: '🎵 Nothing',
 	smallImageKey: images.paused,
 	largeImageKey: images.logo
 };
@@ -17,9 +17,11 @@ const set = (song, image) => {
 	activity.details = `🎵 ${song.title}`;
 	activity.state = `👤 ${song.artist}`;
 	activity.smallImageKey = image;
+	activity.startTimestamp = Math.floor(Date.now() / 1000) - song.played;
+	activity.endTimestamp = activity.startTimestamp + song.length;
 };
 
-let last = Date.now();
+let last = 0;
 let timeout;
 
 const update = () => {
@@ -38,12 +40,11 @@ const update = () => {
 
 client.on('ready', () => {
 	log('Connected to Discord!');
-	spotify.run()
-		.then(() => log('Connected to Spotify!'))
-		.catch(log);
+	spotify.run().then(() => log('Connected to Spotify!'));
 });
 
 spotify.on('song', song => {
+	// console.log(song);
 	log(`New Song: ${song.title}`);
 	set(song, images.playing);
 	update();
@@ -55,9 +56,9 @@ spotify.on('unpause', song => {
 	update();
 });
 
-spotify.on('pause', () => {
+spotify.on('pause', song => {
 	log('Song Paused!');
-	activity.smallImageKey = images.paused;
+	set(song, images.paused);
 	update();
 });
 

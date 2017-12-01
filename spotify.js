@@ -7,7 +7,8 @@ class Song {
 	constructor(data) {
 		this.title = data.track.track_resource.name;
 		this.artist = data.track.artist_resource.name;
-		this.played = data.playing_position;
+		this.played = Math.floor(data.playing_position);
+		this.length = data.track.length;
 		this.id = data.track.track_resource.uri.slice('spotify:track:'.length);
 	}
 }
@@ -19,7 +20,7 @@ class Spotify extends EventEmitter {
 		this._port = 4381;
 		this._open = 'https://open.spotify.com';
 		this._base = `http://localhost:${this._port}`;
-		this._paused = null;
+		this._playing = null;
 		this._song = '';
 	}
 
@@ -33,15 +34,12 @@ class Spotify extends EventEmitter {
 
 	async check() {
 		const { body } = await this._get('/remote/status.json', this._query);
-		if (!Object.keys(body.track).length) return this.emit('stop');
+		if (!body.track || !body.track.track_resource) return this.emit('stop');
 		const song = new Song(body);
+		if (this._playing === null) this._playing = body.playing;
 		if (this._playing !== body.playing) {
 			this._playing = body.playing;
-			if (this._playing) this.emit('unpause', song);
-			else {
-				this._song = song.id;
-				this.emit('pause');
-			}
+			this.emit(`${this._playing ? 'un' : ''}pause`, song);
 		} else {
 			if (this._song !== song.id) {
 				this._song = song.id;
@@ -51,11 +49,16 @@ class Spotify extends EventEmitter {
 	}
 
 	async run() {
-		if (!this._running) spawn(this._path, { detached: true, stdio: 'ignore' }).unref();
-		const { body: token } = await get(`${this._open}/token`).set('Origin', this._open);
-		const { body: csrf } = await this._get('/simplecsrf/token.json');
-		this._query = { csrf: csrf.token, oauth: token.t };
-		this._interval = setInterval(() => this.check(), 1e3);
+		try {
+			if (!this._running) spawn(this._path, { detached: true, stdio: 'ignore' }).unref();
+			const { body: token } = await get(`${this._open}/token`).set('Origin', this._open);
+			const { body: csrf } = await this._get('/simplecsrf/token.json');
+			this._query = { csrf: csrf.token, oauth: token.t };
+			this._interval = setInterval(() => this.check(), 5e3);
+		} catch (error) {
+			this.emit('error', error);
+			setTimeout(() => this.run(), 5e3);
+		}
 		return this;
 	}
 }
