@@ -1,0 +1,1 @@
+### Rewrite of [Spoticord](https://github.com/nations/spoticord)
