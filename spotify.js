@@ -50,7 +50,7 @@ class Spotify extends EventEmitter {
 
 	async run() {
 		try {
-			if (!this._running) spawn(this._path, { detached: true, stdio: 'ignore' }).unref();
+			if (!this._running()) spawn(this._path, { detached: true, stdio: 'ignore' }).unref();
 			const { body: token } = await get(`${this._open}/token`).set('Origin', this._open);
 			const { body: csrf } = await this._get('/simplecsrf/token.json');
 			this._query = { csrf: csrf.token, oauth: token.t };
