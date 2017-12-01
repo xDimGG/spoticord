@@ -6,6 +6,6 @@
 	"private": true,
 	"dependencies": {
 		"discord-rpc": "^3.0.0-beta.4",
-		"snekfetch": "*"
+		"snekfetch": "^3.5.5"
 	}
 }

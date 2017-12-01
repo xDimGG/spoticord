@@ -16,7 +16,7 @@ class Song {
 class Spotify extends EventEmitter {
 	constructor() {
 		super();
-		this._path = resolve(process.env.USERPROFILE, 'AppData', 'Roaming', 'Spotify', 'Data', 'SpotifyWebHelper.exe');
+		if (process.platform === 'win32') this._path = resolve(process.env.USERPROFILE, 'AppData', 'Roaming', 'Spotify', 'Data', 'SpotifyWebHelper.exe');
 		this._port = 4381;
 		this._open = 'https://open.spotify.com';
 		this._base = `http://localhost:${this._port}`;
