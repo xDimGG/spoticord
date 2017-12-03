@@ -6,10 +6,13 @@ const { get } = require('snekfetch');
 class Song {
 	constructor(data) {
 		this.title = data.track.track_resource.name;
-		this.artist = data.track.artist_resource.name;
+		this.id = data.track.track_resource.uri.slice('spotify:track:'.length);
 		this.played = Math.floor(data.playing_position);
 		this.length = data.track.length;
-		this.id = data.track.track_resource.uri.slice('spotify:track:'.length);
+		this.artist = {
+			id: data.track.artist_resource.uri.slice('spotify:artist:'.length),
+			name: data.track.artist_resource.name
+		};
 	}
 }
 
@@ -62,7 +65,7 @@ class Spotify extends EventEmitter {
 			const { body: token } = await get(`${this._open}/token`).set('Origin', this._open);
 			const { body: csrf } = await this._get('/simplecsrf/token.json');
 			this._query = { csrf: csrf.token, oauth: token.t };
-			this._interval = setInterval(() => this.check(), 5e3);
+			this._interval = setInterval(() => this.check(), 2e3);
 		} catch (error) {
 			this.emit('error', error);
 			setTimeout(() => this.run(), 5e3);

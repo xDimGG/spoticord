@@ -1,10 +1,10 @@
 const { id, images, transport } = require('./config');
-const log = require('./log');
+const log = require('./utils/log');
 
 const { Client } = require('discord-rpc');
 const client = new Client({ transport });
 
-const Spotify = require('./spotify');
+const Spotify = require('./utils/spotify');
 const spotify = new Spotify();
 
 const activity = {
@@ -40,11 +40,11 @@ const update = () => {
 
 client.on('ready', () => {
 	log('Connected to Discord!');
+	update();
 	spotify.run().then(() => log('Connected to Spotify!'));
 });
 
 spotify.on('song', song => {
-	// console.log(song);
 	log(`New Song: ${song.title}`);
 	set(song, images.playing);
 	update();
