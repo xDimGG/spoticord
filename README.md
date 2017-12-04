@@ -1,10 +1,11 @@
 # Spoticord
 [![Discord Server](https://discordapp.com/api/guilds/204352669731520512/embed.png)](https://dim.codes/discord)
+
 *Inspired by [nations/spoticord](https://github.com/nations/spoticord)*
 ## Before Installing
 **Disclaimer:** This installation guide is for windows, but you can make it work for other systems if you've used NodeJS before.
 
-0) Make sure you have [NodeJS](https://nodejs.org) and [VS Code](https://code.visualstudio.com) or some other text editor installed
+0) Make sure you have [NodeJS](https://nodejs.org), [Git](https://git-scm.com) and [VS Code](https://code.visualstudio.com) or some other text editor installed
 1) Download this repository by going to the top, click *Clone or download* and then click *Download ZIP*
 2) Once downloaded, extract the only folder, `spoticord-master`, to somewhere you'll remember
 3) If you're on windows, you can just go to the folder, hit `shit+right click` anywhere on the blank space and it'll say *Open command window here*. If you're not on windows and don't know how to cd into a directory, search it up for your operating system, and once you're in the directory, you can proceed
