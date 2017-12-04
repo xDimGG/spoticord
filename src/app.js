@@ -29,7 +29,7 @@ let img = {};
 let last = 0;
 let timeout;
 
-const set = (song, image) => {
+const set = (song, image, playing = true) => {
 	activity.details = `🎵 ${song.title}`;
 	activity.state = `👤 ${song.artist.name}`;
 
@@ -39,8 +39,8 @@ const set = (song, image) => {
 	if (enabled.smallImage) activity.smallImageKey = img.small ? img.small.name : image;
 	if (enabled.smallImage && enabled.smallImageText) activity.smallImageText = song.artist.name;
 
-	if (enabled.timeLeft) activity.startTimestamp = Math.floor(Date.now() / 1000) - song.played;
-	if (enabled.timeLeft) activity.endTimestamp = activity.startTimestamp + song.length;
+	if (enabled.timeLeft) activity.startTimestamp = playing ? Math.floor(Date.now() / 1000) - song.played : null;
+	if (enabled.timeLeft) activity.endTimestamp = playing ? activity.startTimestamp + song.length : null;
 	update();
 };
 
@@ -90,7 +90,7 @@ spotify.on('unpause', song => {
 
 spotify.on('pause', song => {
 	log('Song Paused!');
-	set(song, images.paused);
+	set(song, images.paused, false);
 });
 
 spotify.on('stop', () => {
