@@ -31,13 +31,13 @@ let timeout;
 
 const set = (song, image, playing = true) => {
 	activity.details = `🎵 ${song.title}`;
-	activity.state = `👤 ${song.artist.name}`;
+	activity.state = `👤 ${song.artist.name || 'Unknown'}`;
 
 	if (enabled.largeImage) activity.largeImageKey = img.large ? img.large.name : images.logo;
 	if (enabled.largeImage && enabled.largeImageText) activity.largeImageText = song.title;
 
 	if (enabled.smallImage) activity.smallImageKey = img.small ? img.small.name : image;
-	if (enabled.smallImage && enabled.smallImageText) activity.smallImageText = song.artist.name;
+	if (enabled.smallImage && enabled.smallImageText) activity.smallImageText = song.artist.name || 'Unknown';
 
 	if (enabled.timeLeft) activity.startTimestamp = playing ? Math.floor(Date.now() / 1000) - song.played : null;
 	if (enabled.timeLeft) activity.endTimestamp = playing ? activity.startTimestamp + song.length : null;
