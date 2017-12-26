@@ -50,7 +50,7 @@
 
 ![](https://i.imgur.com/fKzoR08.png)
 
-23) Now, go back to the `config.js` file and where it says `token: ''`, inside of those two quotes, put your token that you copied
+23) Now, go back to the `config.js` file and where it says `discord: ''`, inside of those two quotes, put your token that you copied
 23.5) (Save the file (duh))
 24) After this, type `node .` into your command line and hit enter
 
